@@ -42,6 +42,7 @@ int main(int* argc, char* argv[])
 	char ipdest[256];
 	char default_ip4[16] = "127.0.0.1";
 	char default_ip6[64] = "::1";
+	int cont = 0;
 
 	WORD wVersionRequested;
 	WSADATA wsaData;
@@ -138,15 +139,16 @@ int main(int* argc, char* argv[])
 							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", HL, input, CRLF);
 						}
 						break;
-					case S_PASS:
-						printf("CLIENTE> Introduzca la clave (enter para salir): ");
+					case MAIL:
+						printf("CLIENTE> Introduzca el remitente (enter para salir): ");
 						gets_s(input, sizeof(input));
 						if (strlen(input) == 0) {
 							sprintf_s(buffer_out, sizeof(buffer_out), "%s%s", SD, CRLF);
 							estado = S_QUIT;
 						}
 						else
-							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", PW, input, CRLF);
+							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", ML, input, CRLF);
+						cont++;
 						break;
 					case S_DATA:
 						printf("CLIENTE> Introduzca datos (enter o QUIT para salir): ");
@@ -198,9 +200,17 @@ int main(int* argc, char* argv[])
 								
 							}
 						}
-						if (estado != HELO && strncmp(buffer_in, OK, 2) == 0){
-							estado++;
+						if (estado == MAIL) {
+							if (cont < 2) {
+								cont++;
+							}
+							else {
+								estado++;
+							}
 						}
+						/*if (estado != HELO && strncmp(buffer_in, OK, 2) == 0){
+							estado++;
+						*///}
 						//Si la autenticación no es correcta se vuelve al estado S_USER
 						/*if (estado == S_PASS && strncmp(buffer_in, OK, 2) != 0) {
 							estado = HELO;

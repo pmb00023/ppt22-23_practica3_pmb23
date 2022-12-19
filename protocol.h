@@ -9,12 +9,12 @@
 #define SD  "QUIT"  // Finalizacion de la conexion de aplicacion
 #define ECHO "ECHO" // Definicion del comando "ECHO" para el servicio de eco
 #define HL "HELO"
-#define OK1 "220"
-#define OK2 "250"
-
+#define ML "MAIL FROM:"
 // RESPUESTAS A COMANDOS DE APLICACION
 #define OK  "OK"
 #define ER  "ER"
+#define OK1 "220"
+#define OK2 "250"
 
 //FIN DE RESPUESTA
 #define CRLF "\r\n"
@@ -22,7 +22,7 @@
 //ESTADOS
 #define BIENVENIDA 0
 #define HELO 1
-#define S_PASS 2
+#define MAIL 2
 #define S_DATA 3
 #define S_QUIT 4
 
