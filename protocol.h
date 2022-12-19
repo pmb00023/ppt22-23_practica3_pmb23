@@ -8,7 +8,8 @@
 
 #define SD  "QUIT"  // Finalizacion de la conexion de aplicacion
 #define ECHO "ECHO" // Definicion del comando "ECHO" para el servicio de eco
-
+#define HL "HELO"
+#define OK1 "220"
 
 // RESPUESTAS A COMANDOS DE APLICACION
 #define OK  "OK"
@@ -18,7 +19,7 @@
 #define CRLF "\r\n"
 
 //ESTADOS
-#define S_INIT 0
+#define BIENVENIDA 0
 #define S_USER 1
 #define S_PASS 2
 #define S_DATA 3

@@ -114,7 +114,7 @@ int main(int* argc, char* argv[])
 			}
 
 			//Cada nueva conexión establece el estado incial en
-			estado = S_INIT;
+			estado = BIENVENIDA;
 
 			if (connect(sockfd, server_in, address_size) == 0) {
 				printf("CLIENTE> CONEXION ESTABLECIDA CON %s:%d\r\n", ipdest, TCP_SERVICE_PORT);
@@ -122,11 +122,12 @@ int main(int* argc, char* argv[])
 				//Inicio de la máquina de estados
 				do {
 					switch (estado) {
-					case S_INIT:
-						// Se recibe el mensaje de bienvenida
+					case BIENVENIDA:
+						printf("Bienvenido al cliente SMTP \r\n");
 						break;
 					case S_USER:
 						// establece la conexion de aplicacion 
+						strcpy_s(input,sizeof(input), "");
 						printf("CLIENTE> Introduzca el usuario (enter para salir): ");
 						gets_s(input, sizeof(input));
 						if (strlen(input) == 0) {
@@ -134,7 +135,7 @@ int main(int* argc, char* argv[])
 							estado = S_QUIT;
 						}
 						else {
-							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", SC, input, CRLF);
+							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", HL, input, CRLF);
 						}
 						break;
 					case S_PASS:
@@ -160,8 +161,8 @@ int main(int* argc, char* argv[])
 						break;
 
 					}
-
-					if (estado != S_INIT) {
+					
+					if (estado != BIENVENIDA) {
 						enviados = send(sockfd, buffer_out, (int)strlen(buffer_out), 0);
 						if (enviados == SOCKET_ERROR) {
 							estado = S_QUIT;
@@ -185,6 +186,11 @@ int main(int* argc, char* argv[])
 					else {
 						buffer_in[recibidos] = 0x00;
 						printf(buffer_in);
+						if (estado == BIENVENIDA) {
+							if (strncmp(buffer_in, OK1, 3) == 0){
+							estado++;
+							}
+						}
 						if (estado != S_DATA && strncmp(buffer_in, OK, 2) == 0){
 							estado++;
 						}
@@ -192,6 +198,8 @@ int main(int* argc, char* argv[])
 						if (estado == S_PASS && strncmp(buffer_in, OK, 2) != 0) {
 							estado = S_USER;
 						}
+						
+
 					}
 
 				} while (estado != S_QUIT);
