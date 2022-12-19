@@ -125,7 +125,7 @@ int main(int* argc, char* argv[])
 					case BIENVENIDA:
 						printf("Bienvenido al cliente SMTP \r\n");
 						break;
-					case S_USER:
+					case HELO:
 						// establece la conexion de aplicacion 
 						strcpy_s(input,sizeof(input), "");
 						printf("CLIENTE> Introduzca el usuario (enter para salir): ");
@@ -191,13 +191,20 @@ int main(int* argc, char* argv[])
 							estado++;
 							}
 						}
-						if (estado != S_DATA && strncmp(buffer_in, OK, 2) == 0){
+						if (estado == HELO) {
+							
+							if (strncmp(buffer_in, OK2, 3) == 0) {
+								estado++;
+								
+							}
+						}
+						if (estado != HELO && strncmp(buffer_in, OK, 2) == 0){
 							estado++;
 						}
 						//Si la autenticación no es correcta se vuelve al estado S_USER
-						if (estado == S_PASS && strncmp(buffer_in, OK, 2) != 0) {
-							estado = S_USER;
-						}
+						/*if (estado == S_PASS && strncmp(buffer_in, OK, 2) != 0) {
+							estado = HELO;
+						}*/
 						
 
 					}
