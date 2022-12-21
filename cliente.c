@@ -42,7 +42,8 @@ int main(int* argc, char* argv[])
 	char ipdest[256];
 	char default_ip4[16] = "127.0.0.1";
 	char default_ip6[64] = "::1";
-	int cont = 0;
+	int cont = 0, cont2 = 0;
+	char dest[32];
 
 	WORD wVersionRequested;
 	WSADATA wsaData;
@@ -128,7 +129,7 @@ int main(int* argc, char* argv[])
 						break;
 					case HELO:
 						// establece la conexion de aplicacion 
-						strcpy_s(input,sizeof(input), "");
+						strcpy_s(input, sizeof(input), "");
 						printf("CLIENTE> Introduzca el usuario (enter para salir): ");
 						gets_s(input, sizeof(input));
 						if (strlen(input) == 0) {
@@ -150,19 +151,36 @@ int main(int* argc, char* argv[])
 							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", ML, input, CRLF);
 						cont++;
 						break;
-					case S_DATA:
-						printf("CLIENTE> Introduzca datos (enter o QUIT para salir): ");
+					case RCPT:
+						printf("CLIENTE> Introduzca el destinatario (enter o QUIT para salir): ");
+						gets_s(dest,sizeof(dest));
+						printf(dest);
+						if (strlen(input) == 0) {
+							sprintf_s(buffer_out, sizeof(buffer_out), "%s%s", SD, CRLF);
+							estado = S_QUIT;
+						}
+						else {
+							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", RPT, input, CRLF);
+							cont2++;
+						}
+						break;
+
+					
+					case DATA:
+						printf("CLIENTE> Introduzca el asunto del mail (enter o QUIT para salir): ");
 						gets_s(input, sizeof(input));
 						if (strlen(input) == 0) {
 							sprintf_s(buffer_out, sizeof(buffer_out), "%s%s", SD, CRLF);
 							estado = S_QUIT;
 						}
 						else {
-							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", ECHO, input, CRLF);
+							sprintf_s(buffer_out, sizeof(buffer_out), "%s %s%s", SB, input, CRLF);
+							cont2++;
 						}
+						
 						break;
-
 					}
+
 					
 					if (estado != BIENVENIDA) {
 						enviados = send(sockfd, buffer_out, (int)strlen(buffer_out), 0);
@@ -207,6 +225,15 @@ int main(int* argc, char* argv[])
 							else {
 								estado++;
 							}
+						}
+						if (estado == RCPT) {
+							if (cont2 < 1) {
+								cont++;
+							}
+							else {
+								estado++;
+							}
+
 						}
 						/*if (estado != HELO && strncmp(buffer_in, OK, 2) == 0){
 							estado++;

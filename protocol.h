@@ -10,6 +10,10 @@
 #define ECHO "ECHO" // Definicion del comando "ECHO" para el servicio de eco
 #define HL "HELO"
 #define ML "MAIL FROM:"
+#define RPT "RCPT TO:"
+#define SB "SUBJECT:"
+#define TO "TO:"
+#define FRM "FROM:"
 // RESPUESTAS A COMANDOS DE APLICACION
 #define OK  "OK"
 #define ER  "ER"
@@ -23,8 +27,9 @@
 #define BIENVENIDA 0
 #define HELO 1
 #define MAIL 2
-#define S_DATA 3
-#define S_QUIT 4
+#define RCPT 3
+#define DATA 4
+#define S_QUIT 5
 
 
 //PUERTO DEL SERVICIO
